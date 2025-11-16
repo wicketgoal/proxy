@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Working Video Demo - Educational</title>
+    <title>MP4 Video Demo - Educational</title>
     <link href="https://vjs.zencdn.net/8.0.4/video-js.css" rel="stylesheet" />
     <style>
         body {
@@ -12,181 +12,82 @@
             font-family: Arial, sans-serif;
             background: #1a1a1a;
             color: #fff;
+            text-align: center;
         }
         .container {
-            max-width: 1000px;
+            max-width: 800px;
             margin: 0 auto;
         }
         #videoPlayer {
             width: 100%;
-            height: 500px;
+            height: 400px;
             margin: 20px 0;
-            background: #000;
         }
-        .stream-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        .video-buttons {
+            display: flex;
             gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
             margin: 20px 0;
         }
-        .stream-btn {
-            padding: 15px;
-            background: #2a4a5a;
+        .video-btn {
+            padding: 15px 25px;
+            background: #0088cc;
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
         }
-        .stream-btn:hover {
-            background: #3a5a6a;
-        }
-        .stream-btn.working {
-            background: #2a5a2a;
-        }
-        .status {
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            background: #2a4a5a;
-        }
-        .status.success { background: #2a5a2a; }
-        .status.error { background: #5a2a2a; }
-        .info-box {
-            background: #2a2a5a;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
+        .video-btn:hover {
+            background: #0077bb;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎥 Working Video Stream Demo</h1>
-        <p>Click any button below to load a working test stream:</p>
+        <h1>🎬 Simple MP4 Video Demo</h1>
+        <p>This demonstrates basic video playback with direct MP4 files</p>
 
-        <div class="info-box">
-            <h3>✅ Pre-tested Working Streams:</h3>
-            <p>These streams are known to work without CORS issues:</p>
-        </div>
-
-        <div class="stream-buttons">
-            <button class="stream-btn working" onclick="loadStream(1)">
-                📺 Stream 1<br>
-                <small>Mux Test Video</small>
-            </button>
-            <button class="stream-btn working" onclick="loadStream(2)">
-                📺 Stream 2<br>
-                <small>Apple Test Stream</small>
-            </button>
-            <button class="stream-btn working" onclick="loadStream(3)">
-                📺 Stream 3<br>
-                <small>Live Test Stream</small>
-            </button>
-            <button class="stream-btn working" onclick="loadStream(4)">
-                📺 Stream 4<br>
-                <small>Unified Streaming</small>
-            </button>
-        </div>
-
-        <div id="status" class="status">
-            👆 Click a stream above to start playing
+        <div class="video-buttons">
+            <button class="video-btn" onclick="loadVideo(1)">Sample Video 1</button>
+            <button class="video-btn" onclick="loadVideo(2)">Sample Video 2</button>
+            <button class="video-btn" onclick="loadVideo(3)">Sample Video 3</button>
         </div>
 
         <video-js id="videoPlayer" class="video-js vjs-default-skin" controls preload="auto">
             Your browser doesn't support video playback.
         </video-js>
 
-        <div class="info-box">
-            <h3>🔧 Technical Details:</h3>
-            <p>This demo uses <strong>direct stream URLs</strong> that don't require CORS proxies because they're configured to allow cross-origin requests.</p>
-            <p><strong>Why this works:</strong> These servers include proper CORS headers allowing any website to play their streams.</p>
-        </div>
+        <p><strong>Educational Purpose:</strong> This shows direct video playback without proxies</p>
     </div>
 
-    <!-- Video.js -->
     <script src="https://vjs.zencdn.net/8.0.4/video.min.js"></script>
-    <!-- HLS.js for better HLS support -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    
     <script>
         let player;
 
-        // Pre-tested working streams
-        const streams = {
-            1: {
-                url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
-                name: 'Mux Test Video (SD)'
-            },
-            2: {
-                url: 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8',
-                name: 'Apple BipBop Test'
-            },
-            3: {
-                url: 'https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8',
-                name: 'Live Test Stream'
-            },
-            4: {
-                url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
-                name: 'Tears of Steel Demo'
-            }
+        const videos = {
+            1: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            2: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+            3: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
         };
 
-        function updateStatus(message, type = '') {
-            const statusEl = document.getElementById('status');
-            statusEl.textContent = message;
-            statusEl.className = `status ${type}`;
-            console.log(message);
-        }
-
-        function loadStream(streamId) {
-            const stream = streams[streamId];
-            if (!stream) return;
-
-            updateStatus(`⏳ Loading: ${stream.name}...`);
-
-            // Destroy existing player
-            if (player) {
-                player.dispose();
+        function loadVideo(videoId) {
+            const videoUrl = videos[videoId];
+            
+            if (!player) {
+                player = videojs('videoPlayer');
             }
 
-            // Create new player
-            player = videojs('videoPlayer', {
-                controls: true,
-                autoplay: true,
-                preload: 'auto',
-                fluid: true,
-                sources: [{
-                    src: stream.url,
-                    type: 'application/x-mpegURL'
-                }]
+            player.src({
+                src: videoUrl,
+                type: 'video/mp4'
             });
 
-            // Set up event listeners
-            player.ready(function() {
-                updateStatus(`✅ Loaded: ${stream.name}`, 'success');
-                
-                player.on('loadstart', function() {
-                    console.log('Video load started');
-                });
-
-                player.on('loadeddata', function() {
-                    console.log('Video data loaded');
-                });
-
-                player.on('playing', function() {
-                    updateStatus(`🎬 Now playing: ${stream.name}`, 'success');
-                });
-
-                player.on('error', function() {
-                    const error = player.error();
-                    console.error('Player error:', error);
-                    updateStatus(`❌ Error: ${error?.message || 'Failed to load stream'}`, 'error');
-                });
-            });
+            player.play();
         }
 
-        // Initialize when page loads
+        // Initialize player
         document.addEventListener('DOMContentLoaded', function() {
             player = videojs('videoPlayer', {
                 controls: true,
@@ -194,8 +95,8 @@
                 fluid: true
             });
             
-            // Auto-load first stream
-            setTimeout(() => loadStream(1), 1000);
+            // Auto-load first video
+            loadVideo(1);
         });
     </script>
 </body>
