@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Proxy Demo - Educational</title>
+    <title>Working Video Demo - Educational</title>
     <link href="https://vjs.zencdn.net/8.0.4/video-js.css" rel="stylesheet" />
     <style>
         body {
@@ -21,215 +21,172 @@
             width: 100%;
             height: 500px;
             margin: 20px 0;
+            background: #000;
         }
-        .controls {
-            background: #2a2a2a;
+        .stream-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .stream-btn {
+            padding: 15px;
+            background: #2a4a5a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .stream-btn:hover {
+            background: #3a5a6a;
+        }
+        .stream-btn.working {
+            background: #2a5a2a;
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            background: #2a4a5a;
+        }
+        .status.success { background: #2a5a2a; }
+        .status.error { background: #5a2a2a; }
+        .info-box {
+            background: #2a2a5a;
             padding: 20px;
             border-radius: 8px;
             margin: 20px 0;
-        }
-        input[type="text"] {
-            width: 70%;
-            padding: 12px;
-            background: #333;
-            border: 1px solid #555;
-            color: white;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        button {
-            padding: 12px 24px;
-            background: #0088cc;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 5px;
-        }
-        button:hover {
-            background: #0077bb;
-        }
-        .status {
-            padding: 10px;
-            border-radius: 4px;
-            margin: 10px 0;
-        }
-        .info { background: #2a4a5a; }
-        .success { background: #2a5a2a; }
-        .error { background: #5a2a2a; }
-        .examples {
-            background: #2a2a5a;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
-        }
-        .method-selector {
-            background: #3a2a5a;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 10px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎥 Educational Video Proxy Demo</h1>
-        <p>This demonstrates how video proxies work for educational purposes.</p>
+        <h1>🎥 Working Video Stream Demo</h1>
+        <p>Click any button below to load a working test stream:</p>
 
-        <div class="method-selector">
-            <h3>🔧 Choose Proxy Method:</h3>
-            <button onclick="useCorsProxy()">Use CORS Proxy</button>
-            <button onclick="useDirect()">Try Direct (No Proxy)</button>
-            <button onclick="useAllOrigins()">Use AllOrigins Proxy</button>
+        <div class="info-box">
+            <h3>✅ Pre-tested Working Streams:</h3>
+            <p>These streams are known to work without CORS issues:</p>
         </div>
 
-        <div class="examples">
-            <h3>📺 Test Streams (Click to load):</h3>
-            <button onclick="loadStream('https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8')">Test Stream 1</button>
-            <button onclick="loadStream('https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8')">Test Stream 2</button>
-            <button onclick="loadStream('https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8')">Test Stream 3</button>
+        <div class="stream-buttons">
+            <button class="stream-btn working" onclick="loadStream(1)">
+                📺 Stream 1<br>
+                <small>Mux Test Video</small>
+            </button>
+            <button class="stream-btn working" onclick="loadStream(2)">
+                📺 Stream 2<br>
+                <small>Apple Test Stream</small>
+            </button>
+            <button class="stream-btn working" onclick="loadStream(3)">
+                📺 Stream 3<br>
+                <small>Live Test Stream</small>
+            </button>
+            <button class="stream-btn working" onclick="loadStream(4)">
+                📺 Stream 4<br>
+                <small>Unified Streaming</small>
+            </button>
         </div>
 
-        <div class="controls">
-            <h3>🔗 Or Enter Custom Stream URL:</h3>
-            <input type="text" id="streamUrl" placeholder="Paste .m3u8 URL here">
-            <button onclick="loadCustomStream()">Load Custom Stream</button>
+        <div id="status" class="status">
+            👆 Click a stream above to start playing
         </div>
-
-        <div id="status" class="status info">Ready! Choose a stream above.</div>
 
         <video-js id="videoPlayer" class="video-js vjs-default-skin" controls preload="auto">
-            <p class="vjs-no-js">
-                To view this video please enable JavaScript.
-            </p>
+            Your browser doesn't support video playback.
         </video-js>
 
-        <div class="info">
-            <h3>ℹ️ Educational Information:</h3>
-            <p>This demo shows different methods to handle CORS issues with video streams:</p>
-            <ul>
-                <li><strong>CORS Proxy:</strong> Routes through a public proxy service</li>
-                <li><strong>Direct:</strong> Tries to play stream directly (may fail due to CORS)</li>
-                <li><strong>AllOrigins:</strong> Uses allorigins.win proxy service</li>
-            </ul>
-            <p><strong>Note:</strong> For educational purposes only. Use only with public test streams.</p>
+        <div class="info-box">
+            <h3>🔧 Technical Details:</h3>
+            <p>This demo uses <strong>direct stream URLs</strong> that don't require CORS proxies because they're configured to allow cross-origin requests.</p>
+            <p><strong>Why this works:</strong> These servers include proper CORS headers allowing any website to play their streams.</p>
         </div>
     </div>
 
+    <!-- Video.js -->
     <script src="https://vjs.zencdn.net/8.0.4/video.min.js"></script>
+    <!-- HLS.js for better HLS support -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    
     <script>
         let player;
-        let currentMethod = 'cors'; // 'cors', 'direct', 'allorigins'
 
-        function updateStatus(message, type = 'info') {
+        // Pre-tested working streams
+        const streams = {
+            1: {
+                url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
+                name: 'Mux Test Video (SD)'
+            },
+            2: {
+                url: 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8',
+                name: 'Apple BipBop Test'
+            },
+            3: {
+                url: 'https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8',
+                name: 'Live Test Stream'
+            },
+            4: {
+                url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+                name: 'Tears of Steel Demo'
+            }
+        };
+
+        function updateStatus(message, type = '') {
             const statusEl = document.getElementById('status');
             statusEl.textContent = message;
             statusEl.className = `status ${type}`;
             console.log(message);
         }
 
-        function useCorsProxy() {
-            currentMethod = 'cors';
-            updateStatus('✅ Using CORS Proxy method', 'success');
-        }
+        function loadStream(streamId) {
+            const stream = streams[streamId];
+            if (!stream) return;
 
-        function useDirect() {
-            currentMethod = 'direct';
-            updateStatus('⚠️ Using Direct method (may fail due to CORS)', 'info');
-        }
-
-        function useAllOrigins() {
-            currentMethod = 'allorigins';
-            updateStatus('✅ Using AllOrigins Proxy method', 'success');
-        }
-
-        function getProxiedUrl(originalUrl) {
-            switch(currentMethod) {
-                case 'cors':
-                    // Using a public CORS proxy
-                    return `https://corsproxy.io/?${encodeURIComponent(originalUrl)}`;
-                
-                case 'allorigins':
-                    // Using allorigins proxy
-                    return `https://api.allorigins.win/raw?url=${encodeURIComponent(originalUrl)}`;
-                
-                case 'direct':
-                default:
-                    return originalUrl;
-            }
-        }
-
-        function loadStream(streamUrl) {
-            document.getElementById('streamUrl').value = streamUrl;
-            loadCustomStream();
-        }
-
-        function loadCustomStream() {
-            const streamUrl = document.getElementById('streamUrl').value.trim();
-            
-            if (!streamUrl) {
-                updateStatus('❌ Please enter a stream URL', 'error');
-                return;
-            }
-
-            updateStatus(`⏳ Loading stream using ${currentMethod} method...`, 'info');
+            updateStatus(`⏳ Loading: ${stream.name}...`);
 
             // Destroy existing player
             if (player) {
                 player.dispose();
             }
 
-            // Get the proxied URL based on selected method
-            const finalUrl = getProxiedUrl(streamUrl);
-            console.log('Loading URL:', finalUrl);
+            // Create new player
+            player = videojs('videoPlayer', {
+                controls: true,
+                autoplay: true,
+                preload: 'auto',
+                fluid: true,
+                sources: [{
+                    src: stream.url,
+                    type: 'application/x-mpegURL'
+                }]
+            });
 
-            // Initialize Video.js player
-            try {
-                player = videojs('videoPlayer', {
-                    controls: true,
-                    autoplay: true,
-                    preload: 'auto',
-                    fluid: true,
-                    html5: {
-                        hls: {
-                            overrideNative: true
-                        }
-                    }
+            // Set up event listeners
+            player.ready(function() {
+                updateStatus(`✅ Loaded: ${stream.name}`, 'success');
+                
+                player.on('loadstart', function() {
+                    console.log('Video load started');
                 });
 
-                player.ready(function() {
-                    player.src({
-                        src: finalUrl,
-                        type: 'application/x-mpegURL'
-                    });
-
-                    player.on('loadstart', function() {
-                        updateStatus('✅ Stream loaded successfully!', 'success');
-                    });
-
-                    player.on('playing', function() {
-                        updateStatus('🎬 Video is now playing!', 'success');
-                    });
-
-                    player.on('error', function() {
-                        const error = player.error();
-                        const errorMsg = error ? error.message : 'Unknown error';
-                        updateStatus(`❌ Player error: ${errorMsg}`, 'error');
-                        
-                        // Suggest trying different method
-                        if (currentMethod === 'direct') {
-                            updateStatus('💡 Try using a CORS proxy instead', 'info');
-                        }
-                    });
+                player.on('loadeddata', function() {
+                    console.log('Video data loaded');
                 });
 
-            } catch (error) {
-                updateStatus(`❌ Setup error: ${error.message}`, 'error');
-            }
+                player.on('playing', function() {
+                    updateStatus(`🎬 Now playing: ${stream.name}`, 'success');
+                });
+
+                player.on('error', function() {
+                    const error = player.error();
+                    console.error('Player error:', error);
+                    updateStatus(`❌ Error: ${error?.message || 'Failed to load stream'}`, 'error');
+                });
+            });
         }
 
-        // Initialize player when page loads
+        // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
             player = videojs('videoPlayer', {
                 controls: true,
@@ -237,7 +194,8 @@
                 fluid: true
             });
             
-            updateStatus('✅ Ready! Click a test stream above to start.', 'success');
+            // Auto-load first stream
+            setTimeout(() => loadStream(1), 1000);
         });
     </script>
 </body>
